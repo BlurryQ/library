@@ -1,0 +1,19 @@
+:root {
+ 
+}
+
+:root.light {
+    --background-color: lightgray;
+    --color: black;
+}
+
+:root.dark {
+    --background-color: black;
+    --color: white;
+}
+
+html {
+    background-color: var(--background-color);
+    color: var(--color);
+}
+
