@@ -17,3 +17,13 @@ html {
     color: var(--color);
 }
 
+.form {
+    display: flex;
+    flex-direction: column;  
+    width: 20rem; 
+}
+
+#save {
+    width: 5rem;
+    align-self: center;
+}

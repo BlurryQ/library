@@ -5,9 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BlurryQ's Library</title>
     <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
 </head>
 <body>
-    <h1>TEXT HERE</h1>
+    <form class="form" action="" method="post">
+        <label for="name">Book Name:</label>
+        <input type="text" name="name" id="name">
+        <label for="author">Author:</label>
+        <input type="text" name="author" id="author">
+        <label for="pages">Total Pages:</label>
+        <input type="number" name="pages" id="pages">
+        <label for="pagesRead">Pages Read:</label>
+        <input type="number" name="pagesRead" id="pagesRead">
+        <div class="checkBox">
+            <label for="finished">Book Finished?:</label>
+            <input type="checkbox" name="finished" id="finished">
+        </div>
+        <button type="button" id="save">Save</button>
+    </form>
+    <div class="library" id="library">
+        <div class="display" id="display"></div>
+    </div>
 </body>
 </html>
