@@ -3,13 +3,13 @@
 }
 
 :root.light {
-    --background-color: lightgray;
+    --background-color: #B29776;
     --color: black;
 }
 
 :root.dark {
-    --background-color: black;
-    --color: white;
+    --background-color: #B29776;;
+    --color: black;
 }
 
 html {
@@ -26,4 +26,31 @@ html {
 #save {
     width: 5rem;
     align-self: center;
+}
+
+.intro {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    align-items: center;
+}
+
+.library {
+    align-self: center;
+    justify-self: center;
+    font-size: 5rem;
+    border-bottom: 3px solid black;
+    border-bottom-left-radius: 2rem;
+    margin-bottom: 30vh;
+}
+
+.welcome {
+    text-align: center;
+    text-indent: -25rem;
+}
+
+.shelves {
+    display: grid;
+    width: 850vh;
+    border-bottom: 3px solid #6C2121;
 }
