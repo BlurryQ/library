@@ -54,3 +54,11 @@ html {
     width: 850vh;
     border-bottom: 3px solid #6C2121;
 }
+
+.book {
+    background-color: #965151;
+    height: 420px;
+    width: 150px;
+    border-radius: 2px;
+    border: 2px solid black;
+}
