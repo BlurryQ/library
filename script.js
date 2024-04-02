@@ -109,3 +109,15 @@ function clearInputs() {
 }
 
 updateDisplay(myLibrary)
+
+
+/* 
+
+create +book design
++book AFTER last book div
+
+when +book pressed open form
+once saved it appears from left side
+this will spill to next row
+
+*/
