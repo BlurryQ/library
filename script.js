@@ -33,6 +33,7 @@ PAGES = document.getElementById("pages"),
 PAGES_READ = document.getElementById("pagesRead"),
 FINISHED = document.getElementById("finished"),
 SAVE = document.getElementById("save"),
+CLOSE = document.getElementById("close"),
 DISPLAY = document.getElementById("display")
 
 console.table(myLibrary)
@@ -83,6 +84,10 @@ SAVE.addEventListener("click", () => {
     FORM.style.display = "none"
 })
 
+CLOSE.addEventListener("click", () => {
+    FORM.style.display = "none"
+})
+
 function checkForm() {
     if(TITLE.value !== "" 
         && AUTHOR.value !== ""
@@ -129,12 +134,22 @@ function updateDisplay(library) {
         newBook.appendChild(readIcon)
 
         title = document.createElement("div")
+        title.classList.add("title")
         title.textContent = library[book].title
         newBook.appendChild(title)
 
+        line1 = document.createElement("div")
+        line1.classList.add("line")
+        newBook.appendChild(line1)
+
         author = document.createElement("div")
+        author.classList.add("author")
         author.textContent = library[book].author
         newBook.appendChild(author)
+
+        line2 = document.createElement("div")
+        line2.classList.add("line")
+        newBook.appendChild(line2)
 
         pagesProgress = document.createElement("div");
         const PAGES_READ = library[book].pagesRead,
@@ -142,7 +157,12 @@ function updateDisplay(library) {
         pagesProgress.textContent = `${PAGES_READ} / ${TOTAL_PAGES}`
         newBook.appendChild(pagesProgress)
 
+        line3 = document.createElement("div")
+        line3.classList.add("line")
+        newBook.appendChild(line3)
+
         percentageComplete = document.createElement("div");
+        percentageComplete.classList.add("percentage")
         const PERCENT_COMPLETE = (PAGES_READ / TOTAL_PAGES) * 100
         percentageComplete.textContent = `${Math.round(PERCENT_COMPLETE)} %`
         newBook.appendChild(percentageComplete)
