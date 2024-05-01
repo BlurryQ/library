@@ -5,11 +5,13 @@
 :root.light {
     --background-color: #B29776;
     --color: black;
+    --form-backgroud: #989898;
 }
 
 :root.dark {
     --background-color: #B29776;;
     --color: black;
+    --form-backgroud: #989898;
 }
 
 html {
@@ -18,9 +20,16 @@ html {
 }
 
 .form {
+    position: absolute;
+    left: 40%;
+    top: 50%;
     display: flex;
     flex-direction: column;  
     width: 20rem; 
+    background: var(--form-backgroud);
+    padding: 1rem;
+    border-radius: 1rem;
+    border: 1px solid black;
 }
 
 #save {
@@ -59,10 +68,10 @@ html {
 }
 
 .new-book {
-    background-color: #7F7162;
+    background-color: var(--form-backgroud);
     height: clamp(10rem, 38vh, 15rem); /* 100px / 130px*/
     width: clamp(6rem, 10vw, 8rem); /* 240px / 170px*/
-    border-radius: 2px;
+    border-radius: 0.5rem;
     border: 2px solid black;
     display: flex;
     justify-content: center;
@@ -86,7 +95,7 @@ html {
     background-color: crimson;
     height: clamp(10rem, 38vh, 15rem); /* 100px / 130px*/
     width: clamp(6rem, 10vw, 8rem); /* 240px / 170px*/
-    border-radius: 2px;
+    border-radius: 0.5rem;
     border: 2px solid black;
 
     display: grid;

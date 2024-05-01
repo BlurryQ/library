@@ -6,6 +6,9 @@ root.classList.add('dark');
 
 /* Running code */
 
+const FORM = document.getElementById("new-book-form")
+FORM.style.display = "none"
+
 const myLibrary = [];
 
 function Book(title, author, pages, pagesRead, finished) {
@@ -33,7 +36,7 @@ SAVE = document.getElementById("save"),
 DISPLAY = document.getElementById("display")
 
 console.table(myLibrary)
-/* 
+
 SAVE.setAttribute("disabled", true)
 
 TITLE.addEventListener("change", () => {
@@ -77,6 +80,7 @@ SAVE.addEventListener("click", () => {
     addBookToLibrary(title, author, pages, pagesRead, finished);
     updateDisplay(myLibrary)
     clearInputs()
+    FORM.style.display = "none"
 })
 
 function checkForm() {
@@ -92,11 +96,59 @@ function isBookFinished() {
     return PAGES_READ.value === PAGES.value ? true : false;
 }
 
-function updateDisplay(arr) {
-    DISPLAY.textContent = " || ";
-    arr.forEach(book => {
-        DISPLAY.textContent += book.title + " || ";
-    });
+
+function updateDisplay(library) {
+    const SHELF = document.getElementById("shelf")
+
+    while(SHELF.firstChild) {
+        SHELF.removeChild(SHELF.firstChild)
+    }
+
+    newBook = document.createElement("div")
+    newBook.classList.add("new-book")
+    addNewBook = document.createElement("div")
+    addNewBook.classList.add("add-new-book")
+    add = document.createElement("div")
+    add.classList.add("add")
+    add.textContent = "+"
+    addNewBook.appendChild(add)
+    newBook.appendChild(addNewBook)
+    SHELF.appendChild(newBook)
+
+    newBook.addEventListener("click", () => {
+        console.log("I have been clicked")
+        FORM.style.display = "flex"
+    })
+
+    for(let book in library) {
+        newBook = document.createElement("div")
+        newBook.classList.add("book")
+
+        readIcon = document.createElement("div")
+        readIcon.textContent = "[_|_]"
+        newBook.appendChild(readIcon)
+
+        title = document.createElement("div")
+        title.textContent = library[book].title
+        newBook.appendChild(title)
+
+        author = document.createElement("div")
+        author.textContent = library[book].author
+        newBook.appendChild(author)
+
+        pagesProgress = document.createElement("div");
+        const PAGES_READ = library[book].pagesRead,
+        TOTAL_PAGES = library[book].pages;
+        pagesProgress.textContent = `${PAGES_READ} / ${TOTAL_PAGES}`
+        newBook.appendChild(pagesProgress)
+
+        percentageComplete = document.createElement("div");
+        const PERCENT_COMPLETE = (PAGES_READ / TOTAL_PAGES) * 100
+        percentageComplete.textContent = `${Math.round(PERCENT_COMPLETE)} %`
+        newBook.appendChild(percentageComplete)
+
+        SHELF.insertBefore(newBook, SHELF.firstChild)
+    }
 }
 
 function clearInputs() {
@@ -108,13 +160,7 @@ function clearInputs() {
     SAVE.setAttribute("disabled", true);
 }
 
-updateDisplay(myLibrary) */
-
-
 /* 
-
-create +book design
-+book AFTER last book div
 
 when +book pressed open form
 once saved it appears from left side
@@ -122,34 +168,4 @@ this will spill to next row
 
 */
 
-const SHELF = document.getElementById("shelf")
-
-for(let book in myLibrary) {
-    newBook = document.createElement("div")
-    newBook.classList.add("book")
-
-    readIcon = document.createElement("div")
-    readIcon.textContent = "[_|_]"
-    newBook.appendChild(readIcon)
-
-    title = document.createElement("div")
-    title.textContent = myLibrary[book].title
-    newBook.appendChild(title)
-
-    author = document.createElement("div")
-    author.textContent = myLibrary[book].author
-    newBook.appendChild(author)
-
-    pagesProgress = document.createElement("div");
-    const PAGES_READ = myLibrary[book].pagesRead,
-    TOTAL_PAGES = myLibrary[book].pages;
-    pagesProgress.textContent = `${PAGES_READ} / ${TOTAL_PAGES}`
-    newBook.appendChild(pagesProgress)
-
-    percentageComplete = document.createElement("div");
-    const PERCENT_COMPLETE = (PAGES_READ / TOTAL_PAGES) * 100
-    percentageComplete.textContent = `${Math.round(PERCENT_COMPLETE)} %`
-    newBook.appendChild(percentageComplete)
-
-    SHELF.insertBefore(newBook, SHELF.firstChild)
-}
+updateDisplay(myLibrary)
