@@ -40,7 +40,6 @@ DISPLAY = document.getElementById("display"),
 NEW_BOOK = document.getElementById("add-new-book"),
 SHELF = document.getElementById("shelf");
 
-console.table(myLibrary)
 
 SAVE.setAttribute("disabled", true)
 
@@ -61,7 +60,6 @@ AUTHOR.addEventListener("change", () => {
 PAGES.addEventListener("change", () => {
     let pagesCorrect = correctPagesReadEntry()
     let formComplete = checkForm();
-    console.log(pagesCorrect + " Z " + formComplete)
     if(formComplete && pagesCorrect) {
         SAVE.removeAttribute("disabled");
     } else {
@@ -72,7 +70,6 @@ PAGES.addEventListener("change", () => {
 PAGES_READ.addEventListener("change", () => {
     let pagesCorrect = correctPagesReadEntry()
     let formComplete = checkForm();
-    console.log(pagesCorrect + " Z " + formComplete)
     if(formComplete && pagesCorrect) {
         SAVE.removeAttribute("disabled");
     } else {
@@ -88,10 +85,9 @@ SAVE.addEventListener("click", () => {
     finished = FINISHED.checked;
     let pagesRead = PAGES_READ.value,
     read = isBookFinished(pages, pagesRead, finished);
-/*     console.log("read 2 " + read) */
     if(read) { pagesRead = pages }
     addBookToLibrary(title, author, pages, pagesRead, read, bookIndex);
-    addNewBookToShelf(myLibrary, bookIndex)
+    updateLibrary(myLibrary, bookIndex)
     clearFormInputs()
     FORM.style.display = "none"
 })
@@ -127,8 +123,6 @@ function clearFormInputs() {
 }
 
 function isBookFinished(pages, pagesRead, finished) {
-/*     console.log("pagesT = " + pages + " || pagesR = " + pagesRead)
-    console.log("read"  + finished) */
     if(finished) { return true }
     return pages === pagesRead ? true : false;
 }
@@ -138,127 +132,83 @@ function setBookToRead(bookIndex) {
     return thisBook.finished = !thisBook.finished
 }
 
-function addNewBookToShelf(library, bookIndex) {
-    const book = library[bookIndex]
-    newBook = document.createElement("div")
-    newBook.classList.add("book")
-
-    readIcon = document.createElement("div")
-
-    readIcon.classList.add("reading")
-    readIcon.textContent = "[_|_]"
-    readIcon.setAttribute("id", "toggle-read")
-    readIcon.classList.add("reading")
-    console.log("BF: " + book.finished)
-    if(book.finished) {
-        readIcon.classList.add("read") 
-        readIcon.classList.remove("reading")
+function updateLibrary(library, bookIndex) {
+    
+    for(let i = 1; i < library.length; i++) {
+        SHELF.removeChild(SHELF.firstChild)
     }
-    newBook.appendChild(readIcon)
 
-    title = document.createElement("div")
-    title.classList.add("title")
-    title.textContent = book.title
-    newBook.appendChild(title)
+    for(const book of library) {
+        const newBook = document.createElement("div")
+        newBook.classList.add("book")
+        newBook.setAttribute("id", bookIndex)
 
-    line1 = document.createElement("div")
-    line1.classList.add("line")
-    newBook.appendChild(line1)
+        const readIcon = document.createElement("div")
+        readIcon.classList.add("reading")
+        readIcon.textContent = "[_|_]"
+        readIcon.setAttribute("id", "toggle-read")
+        readIcon.classList.add("reading")
+        if(book.finished) {
+            newBook.classList.add("read")
+            readIcon.classList.add("read") 
+            readIcon.classList.remove("reading")
+        }
+        newBook.appendChild(readIcon)
 
-    author = document.createElement("div")
-    author.classList.add("author")
-    author.textContent = book.author
-    newBook.appendChild(author)
+        const title = document.createElement("div")
+        title.classList.add("title")
+        title.textContent = book.title
+        newBook.appendChild(title)
 
-    line2 = document.createElement("div")
-    line2.classList.add("line")
-    newBook.appendChild(line2)
+        const line1 = document.createElement("div")
+        line1.classList.add("line")
+        newBook.appendChild(line1)
 
-    pagesProgress = document.createElement("div");
-    const PAGES_READ = book.pagesRead,
-    TOTAL_PAGES = book.pages;
-    pagesProgress.textContent = `${PAGES_READ} / ${TOTAL_PAGES}`
-    newBook.appendChild(pagesProgress)
+        const author = document.createElement("div")
+        author.classList.add("author")
+        author.textContent = book.author
+        newBook.appendChild(author)
 
-    line3 = document.createElement("div")
-    line3.classList.add("line")
-    newBook.appendChild(line3)
+        const line2 = document.createElement("div")
+        line2.classList.add("line")
+        newBook.appendChild(line2)
 
-    percentageComplete = document.createElement("div");
-    percentageComplete.classList.add("percentage")
-    const PERCENT_COMPLETE = (PAGES_READ / TOTAL_PAGES) * 100
-    percentageComplete.textContent = `${Math.round(PERCENT_COMPLETE)} %`
-    newBook.appendChild(percentageComplete)
+        const pagesProgress = document.createElement("div");
+        pagesProgress.classList.add("amount-read")
 
-    SHELF.insertBefore(newBook, SHELF.firstChild)
+        const pagesRead = document.createElement("div");
+        pagesRead.textContent = book.pagesRead;
+        pagesProgress.appendChild(pagesRead)
 
-    TOGGLE_READ = document.getElementById("toggle-read");
-    TOGGLE_READ.addEventListener("click", () => {
-        console.log("i: " + bookIndex)
+        const slash = document.createElement("div");
+        slash.textContent = "/"
+        pagesProgress.appendChild(slash)
+
+        const pagesTotal = document.createElement("div");
+        pagesTotal.textContent = book.pages;
+        pagesProgress.appendChild(pagesTotal)
+        newBook.appendChild(pagesProgress)
+
+        const line3 = document.createElement("div")
+        line3.classList.add("line")
+        newBook.appendChild(line3)
+
+        const percentageComplete = document.createElement("div");
+        percentageComplete.classList.add("percentage")
+        const PERCENT_COMPLETE = (book.pagesRead / book.pages) * 100
+        percentageComplete.textContent = `${Math.round(PERCENT_COMPLETE)} %`
+        newBook.appendChild(percentageComplete)
+
+        SHELF.insertBefore(newBook, SHELF.firstChild)
+
+        TOGGLE_READ = document.getElementById("toggle-read");
+        TOGGLE_READ.addEventListener("click", () => {
+        const bookIndex = TOGGLE_READ.parentNode.id
+        console.log("BOOKINDEX: " + bookIndex)
         setBookToRead(bookIndex)
-        updateBook(myLibrary, bookIndex)
+        updateLibrary(myLibrary)
     })
-}
-
-function updateBook(library, bookIndex) {
-    const book = library[bookIndex]
-    newBook = document.createElement("div")
-    newBook.classList.add("book")
-
-    readIcon = document.createElement("div")
-
-    readIcon.classList.add("reading")
-    readIcon.textContent = "[_|_]"
-    readIcon.setAttribute("id", "toggle-read")
-    readIcon.classList.add("reading")
-    console.log("BF: " + book.finished)
-    if(book.finished) {
-        readIcon.classList.add("read") 
-        readIcon.classList.remove("reading")
     }
-    newBook.appendChild(readIcon)
-
-    title = document.createElement("div")
-    title.classList.add("title")
-    title.textContent = book.title
-    newBook.appendChild(title)
-
-    line1 = document.createElement("div")
-    line1.classList.add("line")
-    newBook.appendChild(line1)
-
-    author = document.createElement("div")
-    author.classList.add("author")
-    author.textContent = book.author
-    newBook.appendChild(author)
-
-    line2 = document.createElement("div")
-    line2.classList.add("line")
-    newBook.appendChild(line2)
-
-    pagesProgress = document.createElement("div");
-    const PAGES_READ = book.pagesRead,
-    TOTAL_PAGES = book.pages;
-    pagesProgress.textContent = `${PAGES_READ} / ${TOTAL_PAGES}`
-    newBook.appendChild(pagesProgress)
-
-    line3 = document.createElement("div")
-    line3.classList.add("line")
-    newBook.appendChild(line3)
-
-    percentageComplete = document.createElement("div");
-    percentageComplete.classList.add("percentage")
-    const PERCENT_COMPLETE = (PAGES_READ / TOTAL_PAGES) * 100
-    percentageComplete.textContent = `${Math.round(PERCENT_COMPLETE)} %`
-    newBook.appendChild(percentageComplete)
-
-    SHELF.replaceChild(newBook, bookIndex)
 }
 
-/* 
-
-when +book pressed open form
-once saved it appears from left side
-this will spill to next row
-
-*/
+updateLibrary(myLibrary)

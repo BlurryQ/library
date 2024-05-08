@@ -190,13 +190,21 @@ html {
     width: 80%;
 }
 
+.read .read {
+    font-weight: bold;
+}
 
 .read {
-    font-weight: bold;
-    color: orange
+    background-color: green;
 }
 
 .reading {
     font-weight: normal;
     color: black;
+}
+
+.amount-read {
+    display: flex;
+    justify-content: center;
+    gap: 0.5vw;
 }
