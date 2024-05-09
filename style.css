@@ -81,13 +81,20 @@ html {
     border-radius: 1rem;
     border: 1px solid black;
     grid-template-areas: 
-            '. close'
-            'title-header title'
-            'author-header author'
-            'pagesTotal-header pagesTotal'
-            'pagesRead-header pagesRead'
-            'finished-header finished'
-            'save save'
+            'close close'
+            'title title'
+            'author author'
+            'pagesTotal pagesTotal'
+            'pagesRead pagesRead'
+            'finished-title finished'
+            'save save';
+    gap: 10px;
+}
+
+#finished {
+    display: flex;
+    justify-self: flex-start;
+    grid-area: finished;
 }
 
 #save {
@@ -95,37 +102,18 @@ html {
     align-self: center;
     justify-self: center;
     grid-area: save;
+    margin: 0px;
 }
 
 #close {
     display: flex;
     width: 1rem;
-    align-self: flex-end;
+    justify-self: flex-end;
     justify-content: center;
     background-color: var(--form-backgroud);
     border-radius: 0.4rem;
     border: 1px solid white;
     grid-area: close;
-}
-
-#title {
-    grid-area: title;
-}
-
-#author {
-    grid-area: author;
-}
-
-#pagesTotal {
-    grid-area: pagesTotal;
-}
-
-#pagesRead {
-    grid-area: pagesRead;
-}
-
-#finished {
-    grid-area: finished;
 }
 
 .intro {
