@@ -1,0 +1,5 @@
+svgrepo.com
+read.svg from Adena Sharp Icons
+reading.svg from Responsive Line Icons
+edit.svg from Uxaspects Sharp Cornered Icons
+remove.svg from Object Line Vectors
