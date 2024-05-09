@@ -132,8 +132,8 @@ html {
 
 .new-book ,
 .book {
-    height: clamp(10rem, 38vh, 18rem); /* 100px / 130px*/
-    width: clamp(6rem, 10vw, 8rem); /* 240px / 170px*/
+    height: clamp(10rem, 50vh, 20rem); /* 100px / 130px*/
+    width: clamp(8rem, 20vw, 10rem); /* 240px / 170px*/
     border-radius: 0.5rem;
     border: 2px solid black;
     align-items: center;
@@ -151,15 +151,15 @@ html {
     border: 3px solid #D9D9D9;
     border-radius: 50%;
     background: #D9D9D9;
-    height: clamp(4rem, 10vh, 5rem); /* 70px / 90px */
-    width: clamp(4rem, 10vw, 5rem); /* 70px / 90px*/
+    height: clamp(4rem, 10vw, 5rem);
+    width: clamp(4rem, 10vw, 5rem);
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .book {
-    background-color: crimson;
+    background-color: #c53d3d;
     display: grid;
     grid: repeat(10, 1fr) / 1fr;
     text-align: center;
@@ -193,7 +193,7 @@ html {
 }
 
 .read {
-    background-color: green;
+    background-color: #4f9c3b;
 }
 
 .reading {

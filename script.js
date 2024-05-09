@@ -9,6 +9,7 @@ root.classList.add('dark');
 const FORM = document.getElementById("new-book-form")
 FORM.style.display = "none"
 let editMode = false
+let bookToEditIndex = null
 
 const myLibrary = [];
 
@@ -79,7 +80,18 @@ PAGES_READ.addEventListener("change", () => {
 
 SAVE.addEventListener("click", () => {
     if(editMode) {
-
+        const bookIndex = bookToEditIndex
+        title = TITLE.value,
+        author = AUTHOR.value,
+        pages = PAGES.value,
+        finished = FINISHED.checked;
+        let pagesRead = PAGES_READ.value,
+        read = isBookFinished(pages, pagesRead, finished);
+        if(read) { pagesRead = pages }
+        updateBook(myLibrary, title, author, pages, pagesRead, read, bookIndex);
+        updateLibrary(myLibrary, bookIndex)
+        clearFormInputs()
+        FORM.style.display = "none"
     } else {
         const bookIndex = myLibrary.length,
         title = TITLE.value,
@@ -98,6 +110,7 @@ SAVE.addEventListener("click", () => {
 
 CLOSE.addEventListener("click", () => {
     FORM.style.display = "none"
+    clearFormInputs()
 })
 
 function correctPagesReadEntry() {
@@ -120,6 +133,7 @@ function clearFormInputs() {
     PAGES_READ.value = "";
     FINISHED.checked = false;
     SAVE.setAttribute("disabled", true);
+    bookToEditIndex = null
 }
 
 function isBookFinished(pages, pagesRead, finished) {
@@ -129,12 +143,21 @@ function isBookFinished(pages, pagesRead, finished) {
 
 function setBookToRead(bookIndex) {
     const thisBook = myLibrary[bookIndex]
-    thisBook.pagesRead === thisBook.pages ? thisBook.pagesRead-- : thisBook.pagesRead = thisBook.pages;
+    if(thisBook.pagesRead === thisBook.pages) {
+        if(thisBook.oldPagesRead) {
+            thisBook.pagesRead = thisBook.oldPagesRead
+        } else {
+            thisBook.pagesRead--
+        }
+    } else {
+        thisBook.oldPagesRead = thisBook.pagesRead
+        thisBook.pagesRead = thisBook.pages;
+    }
     return thisBook.finished = !thisBook.finished
 }
 
 function updateLibrary(library) {
-
+console.table(library)
     while(SHELF.firstChild) {
         SHELF.removeChild(SHELF.firstChild)
     }
@@ -156,6 +179,7 @@ function updateLibrary(library) {
 
     for(const book of library) {
         const bookIndex = book.bookIndex
+        console.log(bookIndex)
         const newBook = document.createElement("div")
         newBook.classList.add("book")
         newBook.setAttribute("id", bookIndex)
@@ -242,19 +266,21 @@ function updateLibrary(library) {
         const EDIT_BOOK = document.getElementById("edit")
         EDIT_BOOK.addEventListener("click", () => {
             editBook(library, bookIndex)
+            updateLibrary(library)
         })
 
         const REMOVE_BOOK = document.getElementById("remove")
         REMOVE_BOOK.addEventListener("click", () => {
             removeBook(library, bookIndex)
+            updateLibrary(library)
         })
 
     }
 }
 
 function editBook(library, index) {
-    console.log("Edit: " + index)
     FORM.style.display = "flex"
+    SAVE.removeAttribute("disabled");
 
     const book = library[index]
     TITLE.value = book.title
@@ -263,12 +289,37 @@ function editBook(library, index) {
     PAGES_READ.value = book.pagesRead
     FINISHED.checked = book.finshed
     editMode = true
+    bookToEditIndex = index
+}
+
+function updateBook(library, title, author, pages, pagesRead, read, bookIndex) {
+    let bookToUpdate = library[bookIndex]
+    bookToUpdate = {
+        title,
+        author,
+        pages,
+        pagesRead,
+        read,
+    }
+    library.splice(bookIndex, 1, bookToUpdate)
+    reAssignIDs(library)
+    updateLibrary(myLibrary)
 }
 
 function removeBook(library, index) {
     FORM.style.display = "none"
+    clearFormInputs()
     library.splice(index, 1)
+    reAssignIDs(library)
     updateLibrary(myLibrary)
 }
 
 updateLibrary(myLibrary)
+
+function reAssignIDs(library) {
+    let index = 0;
+    for(const book of library) {
+        book.bookIndex = index;
+        index++
+    }
+}
