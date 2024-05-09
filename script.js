@@ -13,27 +13,12 @@ let bookToEditIndex = null
 
 const myLibrary = [];
 
-function Book(title, author, pages, pagesRead, finished, bookIndex) {
-  this.title = title;
-  this.author = author;
-  this.pages = pages;
-  this.pagesRead = pagesRead;
-  this.finished = finished;
-  this.bookIndex = bookIndex;
-}
-
-function addBookToLibrary(title, author, pages, pagesRead, finished, bookIndex) {
-    let newBook = new Book(title, author, pages, pagesRead, finished, bookIndex);
-    myLibrary.push(newBook);
-}
-
 const THE_HOBBIT = addBookToLibrary("The Hobbit", "J.R.R.Tolkien", 295, 10, false, 0),
 EMPIRE_OF_THE_VAMPIRE = addBookToLibrary("Empire of the Vampire", "Jay Kristoff", 739, 739, true, 1);
 
-
 const TITLE = document.getElementById("title"),
 AUTHOR = document.getElementById("author"),
-PAGES = document.getElementById("pages"),
+PAGES_TOTAL = document.getElementById("pagesTotal"),
 PAGES_READ = document.getElementById("pagesRead"),
 FINISHED = document.getElementById("finished"),
 SAVE = document.getElementById("save"),
@@ -58,7 +43,7 @@ AUTHOR.addEventListener("change", () => {
     }
 })
 
-PAGES.addEventListener("change", () => {
+PAGES_TOTAL.addEventListener("change", () => {
     let pagesCorrect = correctPagesReadEntry()
     let formComplete = checkForm();
     if(formComplete && pagesCorrect) {
@@ -79,33 +64,24 @@ PAGES_READ.addEventListener("change", () => {
 })
 
 SAVE.addEventListener("click", () => {
+    const title = TITLE.value,
+    author = AUTHOR.value,
+    pagesTotal = PAGES_TOTAL.value,
+    finished = FINISHED.checked;
+    let pagesRead = PAGES_READ.value,
+    read = isBookFinished(pagesTotal, pagesRead, finished);
+    if(read) { pagesRead = pagesTotal }
     if(editMode) {
         const bookIndex = bookToEditIndex
-        title = TITLE.value,
-        author = AUTHOR.value,
-        pages = PAGES.value,
-        finished = FINISHED.checked;
-        let pagesRead = PAGES_READ.value,
-        read = isBookFinished(pages, pagesRead, finished);
-        if(read) { pagesRead = pages }
-        updateBook(myLibrary, title, author, pages, pagesRead, read, bookIndex);
+        updateBook(myLibrary, title, author, pagesTotal, pagesRead, read, bookIndex);
         updateLibrary(myLibrary, bookIndex)
-        clearFormInputs()
-        FORM.style.display = "none"
     } else {
-        const bookIndex = myLibrary.length,
-        title = TITLE.value,
-        author = AUTHOR.value,
-        pages = PAGES.value,
-        finished = FINISHED.checked;
-        let pagesRead = PAGES_READ.value,
-        read = isBookFinished(pages, pagesRead, finished);
-        if(read) { pagesRead = pages }
-        addBookToLibrary(title, author, pages, pagesRead, read, bookIndex);
+        const bookIndex = myLibrary.length
+        addBookToLibrary(title, author, pagesTotal, pagesRead, read, bookIndex);
         updateLibrary(myLibrary, bookIndex)
-        clearFormInputs()
-        FORM.style.display = "none"
     }
+    clearFormInputs()
+    FORM.style.display = "none"
 })
 
 CLOSE.addEventListener("click", () => {
@@ -113,14 +89,32 @@ CLOSE.addEventListener("click", () => {
     clearFormInputs()
 })
 
+updateLibrary(myLibrary)
+
+/* functions */
+
+function Book(title, author, pagesTotal, pagesRead, finished, bookIndex) {
+    this.title = title;
+    this.author = author;
+    this.pagesTotal = pagesTotal;
+    this.pagesRead = pagesRead;
+    this.finished = finished;
+    this.bookIndex = bookIndex;
+  }
+  
+  function addBookToLibrary(title, author, pagesTotal, pagesRead, finished, bookIndex) {
+      let newBook = new Book(title, author, pagesTotal, pagesRead, finished, bookIndex);
+      myLibrary.push(newBook);
+  }
+
 function correctPagesReadEntry() {
-    return Number(PAGES.value) >= Number(PAGES_READ.value)
+    return Number(PAGES_TOTAL.value) >= Number(PAGES_READ.value)
 }
 
 function checkForm() {
     if(TITLE.value !== "" 
         && AUTHOR.value !== ""
-        && PAGES.value !== "" 
+        && PAGES_TOTAL.value !== "" 
         && PAGES_READ.value !== "") {
     return true; }
     return false
@@ -129,21 +123,21 @@ function checkForm() {
 function clearFormInputs() {
     TITLE.value = "";
     AUTHOR.value = "";
-    PAGES.value = "";
+    PAGES_TOTAL.value = "";
     PAGES_READ.value = "";
     FINISHED.checked = false;
     SAVE.setAttribute("disabled", true);
     bookToEditIndex = null
 }
 
-function isBookFinished(pages, pagesRead, finished) {
+function isBookFinished(pagesTotal, pagesRead, finished) {
     if(finished) { return true }
-    return pages === pagesRead ? true : false;
+    return pagesTotal === pagesRead ? true : false;
 }
 
 function setBookToRead(bookIndex) {
     const thisBook = myLibrary[bookIndex]
-    if(thisBook.pagesRead === thisBook.pages) {
+    if(thisBook.pagesRead === thisBook.pagesTotal) {
         if(thisBook.oldPagesRead) {
             thisBook.pagesRead = thisBook.oldPagesRead
         } else {
@@ -151,13 +145,12 @@ function setBookToRead(bookIndex) {
         }
     } else {
         thisBook.oldPagesRead = thisBook.pagesRead
-        thisBook.pagesRead = thisBook.pages;
+        thisBook.pagesRead = thisBook.pagesTotal;
     }
     return thisBook.finished = !thisBook.finished
 }
 
 function updateLibrary(library) {
-console.table(library)
     while(SHELF.firstChild) {
         SHELF.removeChild(SHELF.firstChild)
     }
@@ -174,12 +167,11 @@ console.table(library)
     SHELF.appendChild(newBook)
 
     addBook.addEventListener("click", () => {
-        FORM.style.display = "flex"
+        FORM.style.display = "grid"
     })
 
     for(const book of library) {
         const bookIndex = book.bookIndex
-        console.log(bookIndex)
         const newBook = document.createElement("div")
         newBook.classList.add("book")
         newBook.setAttribute("id", bookIndex)
@@ -225,7 +217,7 @@ console.table(library)
         pagesProgress.appendChild(slash)
 
         const pagesTotal = document.createElement("div");
-        pagesTotal.textContent = book.pages;
+        pagesTotal.textContent = book.pagesTotal;
         pagesProgress.appendChild(pagesTotal)
         newBook.appendChild(pagesProgress)
 
@@ -235,7 +227,7 @@ console.table(library)
 
         const percentageComplete = document.createElement("div");
         percentageComplete.classList.add("percentage")
-        const PERCENT_COMPLETE = (book.pagesRead / book.pages) * 100
+        const PERCENT_COMPLETE = (book.pagesRead / book.pagesTotal) * 100
         percentageComplete.textContent = `${Math.floor(PERCENT_COMPLETE)} %`
         newBook.appendChild(percentageComplete)
 
@@ -279,25 +271,25 @@ console.table(library)
 }
 
 function editBook(library, index) {
-    FORM.style.display = "flex"
+    FORM.style.display = "grid"
     SAVE.removeAttribute("disabled");
 
     const book = library[index]
     TITLE.value = book.title
     AUTHOR.value = book.author
-    PAGES.value = book.pages
+    PAGES_TOTAL.value = book.pagesTotal
     PAGES_READ.value = book.pagesRead
     FINISHED.checked = book.finshed
     editMode = true
     bookToEditIndex = index
 }
 
-function updateBook(library, title, author, pages, pagesRead, read, bookIndex) {
+function updateBook(library, title, author, pagesTotal, pagesRead, read, bookIndex) {
     let bookToUpdate = library[bookIndex]
     bookToUpdate = {
         title,
         author,
-        pages,
+        pagesTotal,
         pagesRead,
         read,
     }
@@ -313,8 +305,6 @@ function removeBook(library, index) {
     reAssignIDs(library)
     updateLibrary(myLibrary)
 }
-
-updateLibrary(myLibrary)
 
 function reAssignIDs(library) {
     let index = 0;
