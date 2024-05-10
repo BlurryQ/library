@@ -174,7 +174,7 @@ function updateLibrary(library) {
     for(const book of library) {
         const bookIndex = book.bookIndex
 
-        const readIcon = document.createElement("div")
+        const readIcon = document.createElement("button")
         const newBook = document.createElement("div")
         const title = document.createElement("div")
         const line1 = document.createElement("div")
@@ -188,8 +188,8 @@ function updateLibrary(library) {
         const percentageComplete = document.createElement("div");
         const line4 = document.createElement("div")
         const icons = document.createElement("div")
-        const edit = document.createElement("div")
-        const remove = document.createElement("div")
+        const edit = document.createElement("button")
+        const remove = document.createElement("button")
 
         title.textContent = book.title
         author.textContent = book.author
