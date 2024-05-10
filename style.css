@@ -70,16 +70,16 @@ html {
     color: var(--color);
 }
 
-.form {
-    position: absolute;
-    left: 40%;
-    top: 30%;
-    display: grid;
-    width: 20rem; 
+
+.dialog {
     background: var(--form-backgroud);
     padding: 1rem;
     border-radius: 1rem;
     border: 1px solid black;
+}
+
+.form {
+    display: grid;
     grid-template-areas: 
             'close close'
             'title title'
@@ -204,13 +204,13 @@ html {
     width: 80%;
 }
 
-.read .read {
+.book .read {
     font-weight: bold;
     background: url(./icons/read.svg) center no-repeat;
     padding: 10px;
 }
 
-.read {
+.book:has(.read) {
     background-color: #4f9c3b;
 }
 

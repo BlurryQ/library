@@ -12,20 +12,22 @@
     <script src="script.js" defer></script>
 </head>
 <body>
-    <form id="new-book-form" class="form" action="" method="post">
-        <button type="button" id="close">X</button>
-        <label for="title">Book Title:</label>
-        <input type="text" name="title" id="title">
-        <label for="author">Author:</label>
-        <input type="text" name="author" id="author">
-        <label for="pagesTotal">Total Pages:</label>
-        <input type="number" name="pagesTotal" id="pagesTotal">
-        <label for="pagesRead">Pages Read:</label>
-        <input type="number" name="pagesRead" id="pagesRead">
-        <label for="finished">Book Finished?</label>
-        <input type="checkbox" name="finished" id="finished">
-        <button type="button" id="save">Save</button>
-    </form>
+    <dialog data-modal class="dialog">
+        <form id="new-book-form" class="form" action="" method="post">
+            <button type="button" id="close">X</button>
+            <label for="title">Book Title:</label>
+            <input type="text" name="title" id="title">
+            <label for="author">Author:</label>
+            <input type="text" name="author" id="author">
+            <label for="pagesTotal">Total Pages:</label>
+            <input type="number" name="pagesTotal" id="pagesTotal">
+            <label for="pagesRead">Pages Read:</label>
+            <input type="number" name="pagesRead" id="pagesRead">
+            <label for="finished">Book Finished?</label>
+            <input type="checkbox" name="finished" id="finished">
+            <button type="button" id="save">Save</button>
+        </form>
+    </dialog>
     <div class="intro">
         <div class="welcome">Welcome to</div>
         <div class="library">Your Library</div>

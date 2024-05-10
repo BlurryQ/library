@@ -6,8 +6,6 @@ root.classList.add('dark');
 
 /* Running code */
 
-const FORM = document.getElementById("new-book-form")
-FORM.style.display = "none"
 let editMode = false
 let bookToEditIndex = null
 
@@ -16,7 +14,8 @@ const myLibrary = [];
 const THE_HOBBIT = addBookToLibrary("The Hobbit", "J.R.R.Tolkien", 295, 10, false, 0),
 EMPIRE_OF_THE_VAMPIRE = addBookToLibrary("Empire of the Vampire", "Jay Kristoff", 739, 739, true, 1);
 
-const TITLE = document.getElementById("title"),
+const MODAL = document.querySelector("[data-modal]"),
+TITLE = document.getElementById("title"),
 AUTHOR = document.getElementById("author"),
 PAGES_TOTAL = document.getElementById("pagesTotal"),
 PAGES_READ = document.getElementById("pagesRead"),
@@ -25,7 +24,6 @@ SAVE = document.getElementById("save"),
 CLOSE = document.getElementById("close"),
 DISPLAY = document.getElementById("display"),
 SHELF = document.getElementById("shelf");
-
 
 SAVE.setAttribute("disabled", true)
 
@@ -81,11 +79,11 @@ SAVE.addEventListener("click", () => {
         updateLibrary(myLibrary, bookIndex)
     }
     clearFormInputs()
-    FORM.style.display = "none"
+    MODAL.close()
 })
 
 CLOSE.addEventListener("click", () => {
-    FORM.style.display = "none"
+    MODAL.close()
     clearFormInputs()
 })
 
@@ -156,93 +154,82 @@ function updateLibrary(library) {
     }
 
     const newBook = document.createElement("div")
-    newBook.classList.add("new-book")
     const addBook = document.createElement("div")
-    addBook.setAttribute("id", "add-new-book")
-    addBook.classList.add("add-new-book")
     const add = document.createElement("div")
     add.textContent = "+"
+
+    newBook.classList.add("new-book")
+    addBook.classList.add("add-new-book")
+
+    addBook.setAttribute("id", "add-new-book")
+   
     addBook.appendChild(add)
     newBook.appendChild(addBook)
     SHELF.appendChild(newBook)
 
     addBook.addEventListener("click", () => {
-        FORM.style.display = "grid"
+        MODAL.showModal()
     })
 
     for(const book of library) {
         const bookIndex = book.bookIndex
-        const newBook = document.createElement("div")
-        newBook.classList.add("book")
-        newBook.setAttribute("id", bookIndex)
 
         const readIcon = document.createElement("div")
-        readIcon.classList.add("reading")
-        readIcon.setAttribute("id", "toggle-read")
-        readIcon.classList.add("reading")
-        if(book.finished) {
-            newBook.classList.add("read")
-            readIcon.classList.add("read") 
-            readIcon.classList.remove("reading")
-        }
-        newBook.appendChild(readIcon)
-
+        const newBook = document.createElement("div")
         const title = document.createElement("div")
-        title.classList.add("title")
-        title.textContent = book.title
-        newBook.appendChild(title)
-
         const line1 = document.createElement("div")
-        line1.classList.add("line")
-        newBook.appendChild(line1)
-
         const author = document.createElement("div")
-        author.classList.add("author")
-        author.textContent = book.author
-        newBook.appendChild(author)
-
         const line2 = document.createElement("div")
-        line2.classList.add("line")
-        newBook.appendChild(line2)
-
         const pagesProgress = document.createElement("div");
-        pagesProgress.classList.add("amount-read")
-
         const pagesRead = document.createElement("div");
-        pagesRead.textContent = book.pagesRead;
-        pagesProgress.appendChild(pagesRead)
-
         const slash = document.createElement("div");
-        slash.textContent = "/"
-        pagesProgress.appendChild(slash)
-
         const pagesTotal = document.createElement("div");
-        pagesTotal.textContent = book.pagesTotal;
-        pagesProgress.appendChild(pagesTotal)
-        newBook.appendChild(pagesProgress)
-
         const line3 = document.createElement("div")
-        line3.classList.add("line")
-        newBook.appendChild(line3)
-
         const percentageComplete = document.createElement("div");
-        percentageComplete.classList.add("percentage")
+        const line4 = document.createElement("div")
+        const icons = document.createElement("div")
+        const edit = document.createElement("div")
+        const remove = document.createElement("div")
+
+        title.textContent = book.title
+        author.textContent = book.author
+        pagesRead.textContent = book.pagesRead;
+        slash.textContent = "/"
+        pagesTotal.textContent = book.pagesTotal;
         const PERCENT_COMPLETE = (book.pagesRead / book.pagesTotal) * 100
         percentageComplete.textContent = `${Math.floor(PERCENT_COMPLETE)} %`
-        newBook.appendChild(percentageComplete)
 
-        const line4 = document.createElement("div")
+        newBook.classList.add("book")
+        title.classList.add("title")
+        line1.classList.add("line")
+        author.classList.add("author")
+        line2.classList.add("line")
+        pagesProgress.classList.add("amount-read")
+        line3.classList.add("line")
+        percentageComplete.classList.add("percentage")
         line4.classList.add("line")
-        newBook.appendChild(line4)
-
-        const icons = document.createElement("div")
         icons.classList.add("icons")
-        const edit = document.createElement("div")
         edit.classList.add("edit")
-        edit.setAttribute("id", "edit")
-        const remove = document.createElement("div")
         remove.classList.add("remove")
+        readIcon.classList.add(book.finished ? "read" : "reading")
+
+        newBook.setAttribute("id", bookIndex)
+        readIcon.setAttribute("id", "toggle-read")
+        edit.setAttribute("id", "edit")
         remove.setAttribute("id", "remove")
+
+        newBook.appendChild(readIcon)
+        newBook.appendChild(title)
+        newBook.appendChild(line1)
+        newBook.appendChild(author)
+        newBook.appendChild(line2)
+        pagesProgress.appendChild(pagesRead)
+        pagesProgress.appendChild(slash)
+        pagesProgress.appendChild(pagesTotal)
+        newBook.appendChild(pagesProgress)
+        newBook.appendChild(line3)
+        newBook.appendChild(percentageComplete)
+        newBook.appendChild(line4)
         icons.appendChild(edit)
         icons.appendChild(remove)
         newBook.appendChild(icons)
@@ -271,7 +258,7 @@ function updateLibrary(library) {
 }
 
 function editBook(library, index) {
-    FORM.style.display = "grid"
+    MODAL.showModal()
     SAVE.removeAttribute("disabled");
 
     const book = library[index]
@@ -299,7 +286,7 @@ function updateBook(library, title, author, pagesTotal, pagesRead, read, bookInd
 }
 
 function removeBook(library, index) {
-    FORM.style.display = "none"
+    MODAL.close()
     clearFormInputs()
     library.splice(index, 1)
     reAssignIDs(library)
