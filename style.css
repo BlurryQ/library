@@ -135,7 +135,7 @@ html {
     font-size: 5rem;
     border-bottom: 3px solid black;
     border-bottom-left-radius: 2rem;
-    margin-bottom: 30vh;
+    margin-bottom: 15vh;
 }
 
 .welcome {
@@ -145,7 +145,7 @@ html {
 
 .shelf {
     display: grid;
-    width: 100vw;
+    width: 97.5%;
     border-bottom: 3px solid #6C2121;
     grid: 1fr / repeat(10, 1fr);
     align-items: start;
@@ -245,4 +245,27 @@ html {
 .remove {
     background: url(./icons/remove.svg) center no-repeat;
     padding: 10px;
+}
+
+@media only screen and (max-width: 768px) {
+
+    .welcome {
+        text-indent: -15rem;
+    }
+
+    .library {
+        font-size: 3rem;
+        margin-bottom: 3vh;
+    }
+
+    .shelf {
+        margin: 1vw;
+        gap: 1vw;
+    }
+
+    .new-book ,
+    .book {
+        height: 16rem;
+        width: 7rem;
+    }
 }
