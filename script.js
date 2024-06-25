@@ -6,6 +6,90 @@ root.classList.add('dark');
 
 /* Running code */
 
+class Book {
+    constructor(title, author, pagesTotal, pagesRead, finished, bookIndex) {
+    this.title = title
+    this.author = author
+    this.pagesTotal = pagesTotal
+    this.pagesRead = pagesRead
+    this.finished = finished
+    this.bookIndex = bookIndex
+    console.log("CREATED")
+  }
+
+    isBookFinished = () => {
+        if(finished) { return true }
+        return pagesTotal === pagesRead ? true : false;
+    }
+
+    setBookToRead = (bookIndex) => {
+        const thisBook = myLibrary[bookIndex]
+        if(thisBook.pagesRead === thisBook.pagesTotal) {
+            if(thisBook.oldPagesRead) {
+                thisBook.pagesRead = thisBook.oldPagesRead
+            } else {
+                thisBook.pagesRead--
+            }
+        } else {
+            thisBook.oldPagesRead = thisBook.pagesRead
+            thisBook.pagesRead = thisBook.pagesTotal;
+        }
+        return thisBook.finished = !thisBook.finished
+    }
+
+
+    correctPagesReadEntry = () => {
+        return Number(PAGES_TOTAL.value) >= Number(PAGES_READ.value)
+    }
+
+    editBook = (library, index) => {
+        MODAL.showModal()
+        SAVE.removeAttribute("disabled");
+
+        const book = library[index]
+        TITLE.value = book.title
+        AUTHOR.value = book.author
+        PAGES_TOTAL.value = book.pagesTotal
+        PAGES_READ.value = book.pagesRead
+        FINISHED.checked = book.finshed
+        editMode = true
+        bookToEditIndex = index
+    }
+
+    updateBook = (library, title, author, pagesTotal, pagesRead, read, bookIndex) => {
+        let bookToUpdate = library[bookIndex]
+        bookToUpdate = {
+            title,
+            author,
+            pagesTotal,
+            pagesRead,
+            read,
+        }
+        library.splice(bookIndex, 1, bookToUpdate)
+        reAssignIDs(library)
+        updateLibrary(myLibrary)
+    }
+
+    removeBook = (library, index) => {
+        MODAL.close()
+        clearFormInputs()
+        library.splice(index, 1)
+        reAssignIDs(library)
+        updateLibrary(myLibrary)
+    }
+
+  get getTitle() {
+    return this.title
+  }
+
+  set setTitle(newTitle) {
+    this.title = newTitle
+  }
+}
+
+
+
+
 let editMode = false
 let bookToEditIndex = null
 
@@ -13,6 +97,7 @@ const myLibrary = [];
 
 const THE_HOBBIT = addBookToLibrary("The Hobbit", "J.R.R.Tolkien", 295, 10, false, 0),
 EMPIRE_OF_THE_VAMPIRE = addBookToLibrary("Empire of the Vampire", "Jay Kristoff", 739, 739, true, 1);
+
 
 const MODAL = document.querySelector("[data-modal]"),
 TITLE = document.getElementById("title"),
@@ -91,15 +176,6 @@ updateLibrary(myLibrary)
 
 /* functions */
 
-function Book(title, author, pagesTotal, pagesRead, finished, bookIndex) {
-    this.title = title;
-    this.author = author;
-    this.pagesTotal = pagesTotal;
-    this.pagesRead = pagesRead;
-    this.finished = finished;
-    this.bookIndex = bookIndex;
-  }
-  
   function addBookToLibrary(title, author, pagesTotal, pagesRead, finished, bookIndex) {
       let newBook = new Book(title, author, pagesTotal, pagesRead, finished, bookIndex);
       myLibrary.push(newBook);
@@ -300,3 +376,25 @@ function reAssignIDs(library) {
         index++
     }
 }
+
+
+/* 
+
+page render
+    library
+    books
+    listeners
+
+library
+    add book
+    remove book
+
+books
+    read
+    unread
+    edit
+    new
+
+
+
+ */
