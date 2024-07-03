@@ -58,18 +58,6 @@ button {
     --form-backgroud: #989898;
 }
 
-:root.light {
-    --background-color: #B29776;
-    --color: black;
-    --form-backgroud: #989898;
-}
-
-:root.dark {
-    --background-color: #B29776;;
-    --color: black;
-    --form-backgroud: #989898;
-}
-
 html {
     background-color: var(--background-color);
     color: var(--color);

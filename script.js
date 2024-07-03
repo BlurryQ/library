@@ -1,11 +1,3 @@
-/* Theme code */
-
-const root = document.documentElement;
-
-root.classList.add('dark');
-
-/* Running code */
-
 class Book {
     constructor(title, author, pagesTotal, pagesRead, finished, bookIndex) {
     this.title = title
@@ -18,8 +10,13 @@ class Book {
 
 }
 
-const render = (arr) => {
-    let myLibrary = arr,
+const render = () => {
+
+    const THE_HOBBIT = new Book("The Hobbit", "J.R.R.Tolkien", 295, 10, false, 0),
+    EMPIRE_OF_THE_VAMPIRE = new Book("Empire of the Vampire", "Jay Kristoff", 739, 739, true, 1);
+
+
+    let myLibrary = [THE_HOBBIT, EMPIRE_OF_THE_VAMPIRE],
     editMode = false,
     bookToEditIndex = null;
 
@@ -72,21 +69,23 @@ const render = (arr) => {
     SAVE.addEventListener("click", () => {
         const title = TITLE.value,
         author = AUTHOR.value,
-        pagesTotal = PAGES_TOTAL.value,
-        finished = FINISHED.checked;
-        let pagesRead = PAGES_READ.value,
-        read = _isBookFinished(pagesTotal, pagesRead, finished);
-        if(read) { pagesRead = pagesTotal }
+        pagesTotal = PAGES_TOTAL.value;
+        let finished = FINISHED.checked,
+        pagesRead = PAGES_READ.value;
+        const read = _isBookFinished(pagesTotal, pagesRead, finished);
+        if(read) { 
+            pagesRead = pagesTotal
+            finished = true;
+         }
         if(editMode) {
             const bookIndex = bookToEditIndex
-            _updateBook(myLibrary, title, author, pagesTotal, pagesRead, read, bookIndex);
-            _updateLibrary(myLibrary)
+            _updateBook(myLibrary, title, author, pagesTotal, pagesRead, finished, read, bookIndex);
         } else {
             const bookIndex = myLibrary.length
-            _addBookToLibrary(title, author, pagesTotal, pagesRead, read, bookIndex);
-            _updateLibrary(myLibrary)
+            _addBookToLibrary(title, author, pagesTotal, pagesRead, read, bookIndex);    
         }
         _clearFormInputs()
+        _updateLibrary(myLibrary)
         MODAL.close()
     })
     
@@ -95,7 +94,8 @@ const render = (arr) => {
         _clearFormInputs()
     })
 
-    const shelf = (library) => {
+    const shelf = () => {
+
         while(SHELF.firstChild) {
             SHELF.removeChild(SHELF.firstChild)
         }
@@ -118,8 +118,8 @@ const render = (arr) => {
             MODAL.showModal()
         })
     
-        if(!library) { return }
-        for(const book of library) {
+        if(!myLibrary) { return }
+        for(const book of myLibrary) {
             const bookIndex = book.bookIndex
     
             const readIcon = document.createElement("button")
@@ -187,21 +187,17 @@ const render = (arr) => {
             const TOGGLE_READ = document.getElementById("toggle-read");
             TOGGLE_READ.addEventListener("click", () => {
                 _setBookToRead(bookIndex)
-                _updateLibrary(library)
             })
     
             const EDIT_BOOK = document.getElementById("edit")
             EDIT_BOOK.addEventListener("click", () => {
-                _editBook(library, bookIndex)
-                _updateLibrary(library)
+                _editBook(myLibrary, bookIndex)
             })
     
             const REMOVE_BOOK = document.getElementById("remove")
             REMOVE_BOOK.addEventListener("click", () => {
-                _removeBook(library, bookIndex)
-                _updateLibrary(library)
+                _removeBook(myLibrary, bookIndex)
             })
-    
         }
     }
 
@@ -238,7 +234,7 @@ const render = (arr) => {
         myLibrary.push(newBook);
     }
 
-    const _updateLibrary = (library) => {
+    const _updateLibrary = (myLibrary) => {
         while(SHELF.firstChild) {
             SHELF.removeChild(SHELF.firstChild)
         }
@@ -261,7 +257,7 @@ const render = (arr) => {
             MODAL.showModal()
         })
     
-        for(const book of library) {
+        for(const book of myLibrary) {
             const bookIndex = book.bookIndex
     
             const readIcon = document.createElement("button")
@@ -329,36 +325,35 @@ const render = (arr) => {
             const TOGGLE_READ = document.getElementById("toggle-read");
             TOGGLE_READ.addEventListener("click", () => {
                 _setBookToRead(bookIndex)
-                _updateLibrary(library)
+                _updateLibrary(myLibrary)
             })
     
             const EDIT_BOOK = document.getElementById("edit")
             EDIT_BOOK.addEventListener("click", () => {
-                _editBook(library, bookIndex)
-                _updateLibrary(library)
+                _editBook(myLibrary, bookIndex)
+                _updateLibrary(myLibrary)
             })
     
             const REMOVE_BOOK = document.getElementById("remove")
             REMOVE_BOOK.addEventListener("click", () => {
-                _removeBook(library, bookIndex)
-                _updateLibrary(library)
+                _removeBook(myLibrary, bookIndex)
+                _updateLibrary(myLibrary)
             })
     
         }
     }
 
-    const _updateBook = (library, title, author, pagesTotal, pagesRead, read, bookIndex) => {
-        let bookToUpdate = library[bookIndex]
+    const _updateBook = (myLibrary, title, author, pagesTotal, pagesRead, finished, read, bookIndex) => {
         bookToUpdate = {
             title,
             author,
             pagesTotal,
             pagesRead,
+            finished,
             read,
         }
-        library.splice(bookIndex, 1, bookToUpdate)
-        _reAssignIDs(library)
-        _updateLibrary(myLibrary)
+        myLibrary.splice(bookIndex, 1, bookToUpdate)
+        _reAssignIDs(myLibrary)
     }
     
     const _removeBook = (library, index) => {
@@ -371,17 +366,14 @@ const render = (arr) => {
 
     _setBookToRead = (bookIndex) => {
         const thisBook = myLibrary[bookIndex]
+        thisBook.finished = !thisBook.finished
         if(thisBook.pagesRead === thisBook.pagesTotal) {
-            if(thisBook.oldPagesRead) {
-                thisBook.pagesRead = thisBook.oldPagesRead
-            } else {
-                thisBook.pagesRead--
-            }
+            thisBook.oldPagesRead ? thisBook.pagesRead = thisBook.oldPagesRead : thisBook.pagesRead--
         } else {
             thisBook.oldPagesRead = thisBook.pagesRead
             thisBook.pagesRead = thisBook.pagesTotal;
         }
-        return thisBook.finished = !thisBook.finished
+        return _updateLibrary(myLibrary)
     }
 
     _editBook = (library, index) => {
@@ -410,10 +402,5 @@ const render = (arr) => {
 }
 
 
-
-const THE_HOBBIT = new Book("The Hobbit", "J.R.R.Tolkien", 295, 10, false, 0),
-EMPIRE_OF_THE_VAMPIRE = new Book("Empire of the Vampire", "Jay Kristoff", 739, 739, true, 1);
-
-
-const RENDER = render([])
+const RENDER = render()
 RENDER.shelf()
